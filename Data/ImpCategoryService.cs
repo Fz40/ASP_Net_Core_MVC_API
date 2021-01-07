@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data;
 using Commander.Models;
+using System.Threading.Tasks;
 
 namespace Commander.Data
 {
@@ -19,7 +21,7 @@ namespace Commander.Data
             {
                 throw new ArgumentNullException(nameof(cat));
             }
-            cat.CategoryId = (from c in db.Category select c).OrderByDescending(c => c.CategoryId).First().CategoryId + 1;
+            cat.CategoryId = db.Category.Max(c => c.CategoryId) + 1;
             db.Category.Add(cat);
         }
 
@@ -32,13 +34,13 @@ namespace Commander.Data
             db.Category.Remove(cat);
         }
 
-        public IEnumerable<Category> GetAllCategoty()
+        public async Task<IEnumerable<Category>> GetAllCategoty()
         {
             IEnumerable<Category> data;
             try
             {
                 data = db.Category.ToList();
-                return data;
+                return await Task.FromResult(data);
             }
             catch (Exception ex)
             {
@@ -46,13 +48,13 @@ namespace Commander.Data
             }
         }
 
-        public Category GetCategoryById(int id)
+        public async Task<Category> GetCategoryById(int id)
         {
             Category cat = new Category();
             try
             {
                 cat = db.Category.FirstOrDefault(c => c.CategoryId == id);
-                return cat;
+                return await Task.FromResult(cat);
             }
             catch (Exception ex)
             {
@@ -72,5 +74,6 @@ namespace Commander.Data
             //* เราจึงสามารถนำเอาค่าที่ได้ ส่ง save ได้เลย
             //*
         }
+
     }
 }

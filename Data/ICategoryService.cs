@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Commander.Models;
 
 namespace Commander.Data
@@ -6,9 +7,9 @@ namespace Commander.Data
     public interface ICategoryService
     {
         bool SaveChanges();
-        IEnumerable<Category> GetAllCategoty();
+        Task<IEnumerable<Category>> GetAllCategoty();
 
-        Category GetCategoryById(int id);
+        Task<Category> GetCategoryById(int id);
 
         void CreateCategory(Category cat);
         void UpdateCategory(Category cat);

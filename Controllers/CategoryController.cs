@@ -5,6 +5,7 @@ using Commander.Data;
 using AutoMapper;
 using Commander.Dtos;
 using Microsoft.AspNetCore.JsonPatch;
+using System.Threading.Tasks;
 
 namespace Commander.Controllers
 {
@@ -35,17 +36,23 @@ namespace Commander.Controllers
 
         //Get api/Category
         [HttpGet]
-        public ActionResult<IEnumerable<Category>> GetAllCategory()
+        public async Task<ActionResult<IEnumerable<Category>>> GetAllCategory()
         {
-            var _ImpCat = Impcat.GetAllCategoty();
+            var t_ImpCat = Impcat.GetAllCategoty();
+            await Task.WhenAll(t_ImpCat);
+            var _ImpCat = await t_ImpCat;
+
             return Ok(_mapper.Map<IEnumerable<CategoryReadDto>>(_ImpCat));
         }
 
         //Get api/Category/{id}
         [HttpGet("{id}", Name = "GetCategoryById")]
-        public ActionResult<CategoryReadDto> GetCategoryById(int id)
+        public async Task<ActionResult<CategoryReadDto>> GetCategoryById(int id)
         {
-            var _ImpCat = Impcat.GetCategoryById(id);
+            var t_ImpCat = Impcat.GetCategoryById(id);
+            await Task.WhenAll(t_ImpCat);
+            var _ImpCat = await t_ImpCat;
+
             if (_ImpCat != null)
             {
                 return Ok(_mapper.Map<CategoryReadDto>(_ImpCat));
@@ -76,9 +83,11 @@ namespace Commander.Controllers
 
         //Put api/Category/{id}
         [HttpPut("{id}")]
-        public ActionResult UpdateCategory(int id, CategoryUpdateDto categoryUpdateDto)
+        public async Task<ActionResult> UpdateCategory(int id, CategoryUpdateDto categoryUpdateDto)
         {
-            var categoryModelFromImpCat = Impcat.GetCategoryById(id);
+            var _categoryModelFromImpCat = Impcat.GetCategoryById(id);
+            await Task.WhenAll(_categoryModelFromImpCat);
+            var categoryModelFromImpCat = await _categoryModelFromImpCat;
             if (categoryModelFromImpCat == null)
             {
                 return NotFound();
@@ -97,9 +106,12 @@ namespace Commander.Controllers
 
         //Patch api/Category/{id}
         [HttpPatch("{id}")]
-        public ActionResult PartialUpdateCategory(int id, JsonPatchDocument<CategoryUpdateDto> patchDoc)
+        public async Task<ActionResult> PartialUpdateCategory(int id, JsonPatchDocument<CategoryUpdateDto> patchDoc)
         {
-            var categoryModelFromImpCat = Impcat.GetCategoryById(id);
+            var _categoryModelFromImpCat = Impcat.GetCategoryById(id);
+            await Task.WhenAll(_categoryModelFromImpCat);
+            var categoryModelFromImpCat = await _categoryModelFromImpCat;
+
             if (categoryModelFromImpCat == null)
             {
                 return NotFound();
@@ -124,9 +136,12 @@ namespace Commander.Controllers
 
         //Delete api/Category/{id}
         [HttpDelete("{id}")]
-        public ActionResult DeleteCategory(int id)
+        public async Task<ActionResult> DeleteCategory(int id)
         {
-            var categoryModelFromImpCat = Impcat.GetCategoryById(id);
+            var _categoryModelFromImpCat = Impcat.GetCategoryById(id);
+            await Task.WhenAll(_categoryModelFromImpCat);
+            var categoryModelFromImpCat = await _categoryModelFromImpCat;
+
             if (categoryModelFromImpCat == null)
             {
                 return NotFound();
