@@ -8,12 +8,12 @@ namespace Commander.Data
     {
         bool SaveChanges();
         Task<IEnumerable<Category>> GetAllCategoty();
-
         Task<Category> GetCategoryById(int id);
-
         void CreateCategory(Category cat);
         void UpdateCategory(Category cat);
+
         void DeleteCategory(Category cat);
+        Task<IEnumerable<Category>> GetCategotyByCondition(CategoryConditionModel condition);
 
     }
 }

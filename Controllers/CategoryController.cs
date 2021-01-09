@@ -63,6 +63,24 @@ namespace Commander.Controllers
             }
 
         }
+
+        [HttpPost("Condition", Name = "GetCategotyByCondition")]
+        public async Task<ActionResult<IEnumerable<Category>>> GetCategotyByCondition(CategoryConditionModel condition)
+        {
+            var t_ImpCat = Impcat.GetCategotyByCondition(condition);
+            await Task.WhenAll(t_ImpCat);
+            var _ImpCat = await t_ImpCat;
+
+            if (_ImpCat != null)
+            {
+                return Ok(_mapper.Map<IEnumerable<CategoryReadDto>>(_ImpCat));
+            }
+            else
+            {
+                return NotFound();
+            }
+
+        }
         //Post api/Category
         [HttpPost]
         public ActionResult<CategoryReadDto> CreateCategory(CategoryCreateDto categoryCreateDto)
