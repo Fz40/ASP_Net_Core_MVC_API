@@ -6,6 +6,8 @@ using AutoMapper;
 using Commander.Dtos;
 using Microsoft.AspNetCore.JsonPatch;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Commander.Encode;
 
 namespace Commander.Controllers
 {
@@ -65,7 +67,7 @@ namespace Commander.Controllers
         }
 
         [HttpPost("Condition", Name = "GetCategotyByCondition")]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategotyByCondition(CategoryConditionModel condition)
+        public async Task<ActionResult<string>> GetCategotyByCondition(ConditionModel condition)
         {
             var t_ImpCat = Impcat.GetCategotyByCondition(condition);
             await Task.WhenAll(t_ImpCat);
@@ -73,7 +75,10 @@ namespace Commander.Controllers
 
             if (_ImpCat != null)
             {
-                return Ok(_mapper.Map<IEnumerable<CategoryReadDto>>(_ImpCat));
+                var encryptjson = EncryptDecryptService.EncryptAes(JsonConvert.SerializeObject(_mapper.Map<IEnumerable<CategoryReadDto>>(_ImpCat)));
+                condition.clear();
+                condition.encrypt = encryptjson;
+                return Ok(condition);
             }
             else
             {

@@ -13,7 +13,7 @@ namespace Commander.Data
         void UpdateCategory(Category cat);
 
         void DeleteCategory(Category cat);
-        Task<IEnumerable<Category>> GetCategotyByCondition(CategoryConditionModel condition);
+        Task<IEnumerable<Category>> GetCategotyByCondition(ConditionModel condition);
 
     }
 }
