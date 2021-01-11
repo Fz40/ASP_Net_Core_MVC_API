@@ -84,20 +84,20 @@ namespace Commander.Data
             {
                 var decrypt = EncryptDecryptService.DecryptAes(condition.encrypt);
                 var _condition = JsonConvert.DeserializeObject<ConditionModel>(decrypt);
-                data = db.Category
-                .AsNoTracking()
-                .AsExpandable();
+                data = db.Category.Where(c => c.CategoryId > 0);
+                // .AsNoTracking()
+                // .AsExpandable();
                 if (_condition.id != 0)
                 {
                     data = data.Where(c => c.CategoryId.Equals(_condition.id));
                 }
                 if (_condition.Name != null && _condition.Name.Any())
                 {
-                    data = data.Where(c => c.CategoryName.Contains(_condition.Name));
+                    data = data.Where(c => c.CategoryName.ToLower().Contains(_condition.Name.ToLower()));
                 }
                 if (_condition.Description != null && _condition.Description.Any())
                 {
-                    data = data.Where(c => c.Description.Contains(_condition.Description));
+                    data = data.Where(c => c.Description.ToLower().Contains(_condition.Description.ToLower()));
                 }
 
                 //*
