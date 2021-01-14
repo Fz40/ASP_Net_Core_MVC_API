@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using LinqKit;
 using Commander.Encode;
 using Newtonsoft.Json;
+using System.Transactions;
 
 namespace Commander.Data
 {
@@ -67,7 +68,43 @@ namespace Commander.Data
 
         public bool SaveChanges()
         {
-            return (db.SaveChanges() >= 0);
+            //*
+            //* ตัวอย่างการใช้งาน begin transaction committ rollback
+            //* ในกรณีนี้เราใช้ EF เป็นตัวจัดการ เราจึงประกาศใช้ TransactionScope
+            //* และใช้ tranScope.Complete เพื่อจบงาน โดยที่ไม่ต้องใช้ Committ หรือ RollBack
+            //* ซึ่งถ้าเราใช้ EF มันจะทำทั้ง 2 ฟังชั่น (เมตตอด) ให้อัตโนมัติ
+            //* 
+            using (TransactionScope tranScope = new TransactionScope())
+                try
+                {
+                    var res = db.SaveChanges() >= 0;
+                    tranScope.Complete();
+                    return (res);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+
+            //*
+            //* ตัวอย่างการใช้งาน BeginTransaction Commit Rollback แบบปกติสำหรับใช้กับ LINQ
+            //*
+            // using (dbDataContext db = new dbDataContext())
+            // using (var dbContextTransaction = db.Database.BeginTransaction()) 
+            // {
+            //     try
+            //     { 
+            //         var user = new User(){ID = 1, Name = "Nick"};
+            //         db.Users.Add(user);
+            //         db.SaveChanges();
+            //         dbContextTransaction.Commit(); 
+            //     } 
+            //     catch (Exception) 
+            //     { 
+            //         dbContextTransaction.Rollback(); 
+            //     }
+            // } 
+
         }
 
         public void UpdateCategory(Category cat)
